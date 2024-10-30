@@ -56,5 +56,4 @@ The Code looks like this:
 
 ![Fonts](/img/Extend%20Email%20Editor/fontsdone.png)
 
-
 By following these steps within the Email Template or Marketing Page Template, you can ensure that the custom web fonts you've chosen are easily accessible and can be used by your users to create creative projects.
