@@ -12,7 +12,7 @@ Once you have established this field, you can directly integrate it into the for
 ## Create a marketing form
 Set up a form with the newly created field. You can hide it after your testing phase.
 
-![Marketing Form](img/Extend%20Marketing%20Forms/marketingform.png)
+![MarketingForm](/img/Extend%20Marketing%20Forms/marketingform.png)
 
 ## Implement Code
 ```
@@ -32,7 +32,7 @@ Set up a form with the newly created field. You can hide it after your testing p
 ## Variant 1: Add Code in Form
 Open the HTML Editor in the top right side and paste the code bevor the closing head tag </head> like it is shown in the picture here:
 
-![Code in Form](img/Extend%20Marketing%20Forms/codeinform.png)
+![CodeInForm](/img/Extend%20Marketing%20Forms/codeinform.png)
 
 ## Variant 2: Insert Code on the Website
 If your website hosts multiple forms, it's advisable to publish the JavaScript code once and apply it site-wide. You can achieve this by utilizing Code Plugins like WordPress's 'Header and Footer Code Snippets,' or by directly inserting the code into the header of your website's template. This approach ensures that the JavaScript code is implemented consistently across all your forms, enhancing efficiency and maintaining a unified user experience.
