@@ -39,4 +39,6 @@ document.addEventListener("d365mkt-afterformload", function() {
         }
 });
 </script> ```
-
+ ```bash
+python run.py
+```
