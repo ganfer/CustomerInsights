@@ -3,34 +3,42 @@ Frequently, harnessing the capability to seamlessly embed the web URL directly w
 Incorporating this feature becomes a logical step towards capturing essential web URLs. Here's a concise guide on how to seamlessly integrate them into your marketing form.
 
 ## Add a column on Lead Entity
-Visit the website Power Apps  in order to initiate the creation of a fresh solution. Following that, advance by incorporating a novel column into the "Lead" entity. Be sure to make a record of its logical name for future reference.
+Visit the [PowerApps](https://make.powerapps.com/) website in order to initiate the creation of a fresh solution. Following that, advance by incorporating a novel column into the "Lead" entity. Be sure to make a record of its logical name for future reference.
 
 Once you have established this field, you can directly integrate it into the form.
+
+![PowerApps](/img/Extend%20Marketing%20Forms/powerapps.png)
 
 ## Create a marketing form
 Set up a form with the newly created field. You can hide it after your testing phase.
 
+![Marketing Form](img/Extend%20Marketing%20Forms/marketingform.png)
+
 ## Implement Code
-'''<script>  
+```
+<script>  
  var weburl = document.querySelector('input[name="cre25_weburl"]');
         // Check if the Input-Feld was found
         if (weburl) {
             // Set the Value of the Input-Felds as the actual Web-URL
             weburl.value = window.location.href;
         }
-</script>'''
+</script>
+```
 
 > [!IMPORTANT]
-> **Attention**: Add your logical name of the field instead of the one here → Change cre25_weburl to your own Field
+> **Attention**: Add your logical name of the field instead of the one here → Change `cre25_weburl` to your own Field
 
 ## Variant 1: Add Code in Form
 Open the HTML Editor in the top right side and paste the code bevor the closing head tag </head> like it is shown in the picture here:
 
+![Code in Form](img/Extend%20Marketing%20Forms/codeinform.png)
+
 ## Variant 2: Insert Code on the Website
 If your website hosts multiple forms, it's advisable to publish the JavaScript code once and apply it site-wide. You can achieve this by utilizing Code Plugins like WordPress's 'Header and Footer Code Snippets,' or by directly inserting the code into the header of your website's template. This approach ensures that the JavaScript code is implemented consistently across all your forms, enhancing efficiency and maintaining a unified user experience.
 Because the Script needs an Event to start, the code should looks like this:
-
- ``` <script>
+```
+<script>
 document.addEventListener("d365mkt-afterformload", function() { 
 	var weburl = document.querySelector('input[name="cre25_weburl"]');
 
@@ -40,4 +48,10 @@ document.addEventListener("d365mkt-afterformload", function() {
             weburl.value = window.location.href;;
         }
 });
-</script> ```
+</script>
+```
+> [!IMPORTANT]
+> **Attention**: Don`t forget to update your logical name
+
+## Enjoy
+Now, each form submission automatically captures and saves the URL of the currently visited webpage. This feature adds a cool dimension to the user experience! Additionally, if you intend to implement this functionality on contact-based forms, rest assured that it will work seamlessly.
