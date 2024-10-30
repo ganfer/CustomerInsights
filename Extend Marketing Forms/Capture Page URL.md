@@ -1,3 +1,4 @@
+# Capture Page URL
 Frequently, harnessing the capability to seamlessly embed the web URL directly within the marketing form not only brings forth advantages but also facilitates the meticulous tracing of the origin of form submissions. 
 Incorporating this feature becomes a logical step towards capturing essential web URLs. Here's a concise guide on how to seamlessly integrate them into your marketing form.
 
