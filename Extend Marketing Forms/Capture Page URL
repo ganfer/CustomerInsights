@@ -28,8 +28,7 @@ Open the HTML Editor in the top right side and paste the code bevor the closing 
 ## Variant 2: Insert Code on the Website
 If your website hosts multiple forms, it's advisable to publish the JavaScript code once and apply it site-wide. You can achieve this by utilizing Code Plugins like WordPress's 'Header and Footer Code Snippets,' or by directly inserting the code into the header of your website's template. This approach ensures that the JavaScript code is implemented consistently across all your forms, enhancing efficiency and maintaining a unified user experience.
 Because the Script needs an Event to start, the code should looks like this:
- ```
-<script>
+ ``` <script>
 document.addEventListener("d365mkt-afterformload", function() { 
 	var weburl = document.querySelector('input[name="cre25_weburl"]');
 
@@ -39,5 +38,5 @@ document.addEventListener("d365mkt-afterformload", function() {
             weburl.value = window.location.href;;
         }
 });
-</script>
-```
+</script> ```
+
