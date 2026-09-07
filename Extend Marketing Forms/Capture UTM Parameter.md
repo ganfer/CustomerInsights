@@ -27,6 +27,9 @@ Then we add those fields on a real time marketing form. While it's possible to d
 
 ![Form](/img/Extend%20Marketing%20Forms/form_utm.png)
 
+> [!IMPORTANT]
+> **Attention**: Please have a look at the 2026 Update of this Script.
+
 Publish the form and host it on your website. Afterwards publish following code on the website. This code will store the UTM Parameters in the local session Storage:
 
 ```
