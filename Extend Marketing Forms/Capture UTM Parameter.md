@@ -191,6 +191,68 @@ document.addEventListener("d365mkt-beforeformload", function() {
 });
 </script>
 ```
+# Update 2026
+I was getting frustrated with having to adjust the script repeatedly depending on which prefix was used on a particular website. To simplify maintenance and make the implementation reusable, I created a generic version of the script that can be used across all websites without requiring site-specific prefix changes.
+
+I also changed the **"On Load" event**. In the previous version, the script was only initialized when a form was loaded. This has now been improved so that the script runs on the **general page load instead**, making it independent of whether a form is present on the page.
+
+In addition, support for the standard **UTM Content (`utm_content`)** and **UTM Term (`utm_term`)** parameters has been added. These parameters are commonly used as part of UTM tracking and are now handled alongside the existing UTM parameters.
+
+The script is also designed to work safely on pages or forms where some or all of the corresponding UTM fields do not exist. When querying the DOM for a field that is not present, the selector simply returns an **empty `NodeList`**. Iterating over an empty `NodeList` does nothing and does not throw an error. As a result, the same script can be deployed across different websites and forms regardless of which UTM fields are actually available.
+
+Overall, these changes make the UTM tracking implementation more generic, reusable, and easier to maintain across multiple websites and forms.
+
+
+````
+<script>
+(function () {
+    const utmParameters = [
+        "utm_source",
+        "utm_medium",
+        "utm_campaign",
+        "utm_term",
+        "utm_content"
+    ];
+    const urlParams = new URLSearchParams(window.location.search);
+
+    utmParameters.forEach(function (parameter) {
+        const value = urlParams.get(parameter);
+
+        if (value) {
+            sessionStorage.setItem(parameter, value);
+        }
+    });
+    document.addEventListener("d365mkt-afterformload", function () {
+
+        utmParameters.forEach(function (parameter) {
+
+            const value = sessionStorage.getItem(parameter);
+
+            if (!value) {
+                return;
+            }
+            const fieldSuffix = parameter.replace("utm_", "utm");
+
+            const fields = document.querySelectorAll(
+                'input[name$="' + fieldSuffix + '"]'
+            );
+
+            fields.forEach(function (field) {
+                field.value = value;
+                field.dispatchEvent(
+                    new Event("input", { bubbles: true })
+                );
+
+                field.dispatchEvent(
+                    new Event("change", { bubbles: true })
+                );
+            });
+        });
+
+    });
+})();
+</script>
+````
 
 # Alternative
 I found an alternative way to do so. Please check out this nice blog:
