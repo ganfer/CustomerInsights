@@ -205,6 +205,7 @@ The script is also designed to work safely on pages or forms where some or all o
 
 Overall, these changes make the UTM tracking implementation more generic, reusable, and easier to maintain across multiple websites and forms.
 
+Also I added an LocalStorage Script for longer Storage of the utm parameter (See below)
 
 ````
 <script>
@@ -278,6 +279,98 @@ document.addEventListener("d365mkt-afterformload", () => {
             .forEach(field => field.value = value);
     });
 });
+</script>
+
+````
+# Local Storage
+The script stores a visitor's UTM parameters in the browser's Local Storage. Unlike Session Storage, Local Storage persists across page navigation, new tabs, and even after the browser has been closed and reopened.
+
+This means the UTM parameters only need to be present on the visitor's initial landing URL. If the visitor continues browsing the website and the UTM parameters disappear from the URL, they can still be retrieved later and automatically added to a Dynamics 365 Customer Insights – Journeys form.
+
+TTL (Time to Live) defines how long the stored UTM information remains valid. The retention period can be configured using TTL_DAYS. For example, TTL_DAYS = 30 means that the UTM information remains valid for up to 30 days. Once the TTL has expired, the stored UTM values are removed the next time the script runs.
+
+If the visitor enters the website through a new campaign within this period — meaning the URL contains at least one supported UTM parameter — all UTM values from the previous campaign are removed first. Only the UTM parameters provided by the new URL are then stored, and the TTL starts again. This prevents values from different campaigns from being mixed.
+
+The script supports utm_source, utm_medium, utm_campaign, utm_term, and utm_content.
+
+The Dataverse publisher prefix does not matter. For example, fields such as cre25_utmsource, abc_utmsource, or new_utmsource are all recognized automatically. If one or more UTM fields do not exist on a particular form, they are simply ignored and no error is generated.
+````
+<script>
+(function () {
+    const TTL_DAYS = 30;
+
+    const utmParameters = [
+        "utm_source",
+        "utm_medium",
+        "utm_campaign",
+        "utm_term",
+        "utm_content"
+    ];
+
+    const TTL = TTL_DAYS * 24 * 60 * 60 * 1000;
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const hasUtmParameters = utmParameters.some(
+        parameter => urlParams.has(parameter)
+    );
+
+    if (hasUtmParameters) {
+        utmParameters.forEach(function (parameter) {
+            localStorage.removeItem(parameter);
+        });
+
+        utmParameters.forEach(function (parameter) {
+            const value = urlParams.get(parameter);
+
+            if (value) {
+                localStorage.setItem(parameter, value);
+            }
+        });
+
+        localStorage.setItem(
+            "utm_expires",
+            String(Date.now() + TTL)
+        );
+    }
+
+    const expires = Number(
+        localStorage.getItem("utm_expires")
+    );
+
+    if (expires && Date.now() > expires) {
+        utmParameters.forEach(function (parameter) {
+            localStorage.removeItem(parameter);
+        });
+
+        localStorage.removeItem("utm_expires");
+    }
+
+    document.addEventListener("d365mkt-afterformload", function () {
+        utmParameters.forEach(function (parameter) {
+            const value = localStorage.getItem(parameter);
+
+            if (!value) {
+                return;
+            }
+
+            const fieldSuffix = parameter.replace("utm_", "utm");
+
+            document
+                .querySelectorAll('input[name$="' + fieldSuffix + '"]')
+                .forEach(function (field) {
+                    field.value = value;
+
+                    field.dispatchEvent(
+                        new Event("input", { bubbles: true })
+                    );
+
+                    field.dispatchEvent(
+                        new Event("change", { bubbles: true })
+                    );
+                });
+        });
+    });
+})();
 </script>
 
 ````
