@@ -253,6 +253,31 @@ Overall, these changes make the UTM tracking implementation more generic, reusab
 })();
 </script>
 ````
+Minimalized Version (AI Generated)
+````
+<script>
+const utms = ["source", "medium", "campaign", "term", "content"];
+
+const params = new URLSearchParams(location.search);
+
+utms.forEach(x => {
+    const value = params.get("utm_" + x);
+    if (value) sessionStorage.setItem("utm_" + x, value);
+});
+
+document.addEventListener("d365mkt-afterformload", () => {
+    utms.forEach(x => {
+        const value = sessionStorage.getItem("utm_" + x);
+        if (!value) return;
+
+        document
+            .querySelectorAll(`input[name$="utm${x}"]`)
+            .forEach(field => field.value = value);
+    });
+});
+</script>
+
+````
 
 # Alternative
 I found an alternative way to do so. Please check out this nice blog:
