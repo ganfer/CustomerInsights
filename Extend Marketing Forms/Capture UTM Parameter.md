@@ -345,7 +345,12 @@ The Dataverse publisher prefix does not matter. For example, fields such as cre2
         localStorage.removeItem("utm_expires");
     }
 
-    document.addEventListener("d365mkt-afterformload", function () {
+    function populateUtmFields(root) {
+        const searchRoot =
+            root && typeof root.querySelectorAll === "function"
+                ? root
+                : document;
+
         utmParameters.forEach(function (parameter) {
             const value = localStorage.getItem(parameter);
 
@@ -353,10 +358,11 @@ The Dataverse publisher prefix does not matter. For example, fields such as cre2
                 return;
             }
 
-            const fieldSuffix = parameter.replace("utm_", "utm");
-
-            document
-                .querySelectorAll('input[name$="' + fieldSuffix + '"]')
+            // The Dynamics fields now use names such as utm_source,
+            // utm_medium, utm_campaign, etc. The suffix selector keeps
+            // this independent from any publisher prefix.
+            searchRoot
+                .querySelectorAll('input[name$="' + parameter + '"]')
                 .forEach(function (field) {
                     field.value = value;
 
@@ -369,7 +375,22 @@ The Dataverse publisher prefix does not matter. For example, fields such as cre2
                     );
                 });
         });
+    }
+
+    // Normal case: listener is registered before Dynamics finishes rendering.
+    document.addEventListener("d365mkt-afterformload", function (event) {
+        populateUtmFields(event.target);
     });
+
+    // Fallback for embedded forms that were already rendered before this script
+    // registered its event listener.
+    populateUtmFields(document);
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", function () {
+            populateUtmFields(document);
+        });
+    }
 })();
 </script>
 
